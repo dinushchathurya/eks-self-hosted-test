@@ -1,9 +1,27 @@
-name: Actions Runner Controller Demo
+name: CI Workflow
+
 on:
-  workflow_dispatch: 
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  Explore-GitHub-Actions: 
-    runs-on: arc-runner-set
+  build:
+    runs-on: self-hosted  # This ensures the job runs on your self-hosted runner in EKS
     steps:
-    - run: echo "🎉 This job uses runner scale set runners!"
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Tests
+        run: npm test
